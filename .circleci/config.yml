@@ -124,6 +124,14 @@ jobs:
             npm audit fix --audit-level=critical --force
             npm audit --audit-level=critical
 
+persist:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - ansible/inventory.txt
             
   deploy-infrastructure:
     docker:
@@ -154,10 +162,7 @@ jobs:
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --filters "Name=tag:Project,Values=udapeople" \
               --output text >> .circleci/ansible/inventory.txt
-      - persist_to_workspace:
-          root: ~/
-          paths:
-            - ansible/inventory.txt
+      - persist
       - destroy_environment     
 
 #   configure-infrastructure:
