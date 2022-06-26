@@ -127,7 +127,9 @@ jobs:
             
   deploy-infrastructure:
     docker:
-      - image: amazon/aws-cli
+      - image: cimg/aws:2022.6.1
+      # - image: amazon/aws-cli
+      # - image: circleci/node:13.8.0
     steps:
       - checkout
       - run:
