@@ -1,6 +1,16 @@
 version: 2.1
 
 commands:
+
+  persist:
+      docker:
+        - image: circleci/node:13.8.0
+      steps:
+        - persist_to_workspace:
+            root: ~/
+            paths:
+              - ansible/inventory.txt
+              
   destroy_environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     steps:
@@ -124,14 +134,7 @@ jobs:
             npm audit fix --audit-level=critical --force
             npm audit --audit-level=critical
 
-  persist:
-      docker:
-        - image: circleci/node:13.8.0
-      steps:
-        - persist_to_workspace:
-            root: ~/
-            paths:
-              - ansible/inventory.txt
+  
             
   deploy-infrastructure:
     docker:
