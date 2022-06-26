@@ -1,16 +1,6 @@
 version: 2.1
 
 commands:
-
-  persist:
-      docker:
-        - image: circleci/node:13.8.0
-      steps:
-        - persist_to_workspace:
-            root: ~/
-            paths:
-              - ansible/inventory.txt
-              
   destroy_environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     steps:
@@ -134,12 +124,11 @@ jobs:
             npm audit fix --audit-level=critical --force
             npm audit --audit-level=critical
 
-  
             
   deploy-infrastructure:
     docker:
-      # - image: cimg/aws:2022.6.1
-      - image: amazon/aws-cli
+      - image: cimg/aws:2022.6.1
+      # - image: amazon/aws-cli
     steps:
       - checkout
       - run:
@@ -165,7 +154,10 @@ jobs:
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --filters "Name=tag:Project,Values=udapeople" \
               --output text >> .circleci/ansible/inventory.txt
-      - persist
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - .circleci/ansible/inventory.txt
       - destroy_environment     
 
 #   configure-infrastructure:
