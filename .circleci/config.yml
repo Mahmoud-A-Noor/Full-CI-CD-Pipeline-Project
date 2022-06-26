@@ -127,10 +127,13 @@ jobs:
             
   deploy-infrastructure:
     docker:
-      - image: cimg/aws:2022.6.1
+      - image: ubuntu
       # - image: amazon/aws-cli
     steps:
       - checkout
+      - run: curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+      - run: unzip awscliv2.zip
+      - run: sudo ./aws/install 
       - run:
           name: Ensure back-end infrastructure exists
           command: | 
