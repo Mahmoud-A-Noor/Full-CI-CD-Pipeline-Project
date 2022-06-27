@@ -184,6 +184,7 @@ jobs:
       - run:
           name: Configure server
           command: |
+            cat ./workspace/inventory.txt
             ansible-playbook -i ./workspace/inventory.txt .circleci/ansible/configure-server.yml
       - destroy_environment       
 
