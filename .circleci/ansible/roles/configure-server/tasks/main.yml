@@ -9,7 +9,7 @@
 - name: Install nodejs and npm
   apt:
     pkg:
-      - nodejs
+      - nodejs=13.14.0
       - npm
 # - name: "install dependencies."
 #   become: true
