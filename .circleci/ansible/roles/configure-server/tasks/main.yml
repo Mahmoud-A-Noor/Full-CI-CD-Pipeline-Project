@@ -4,12 +4,19 @@
   apt:
     upgrade: "yes"
 
-- name: "install dependencies."
-  become: true
+- name: Update apt repo and cache
+      apt: update_cache=yes force_apt_get=yes cache_valid_time=3600
+- name: Install nodejs and npm
   apt:
-    name: ["nodejs", "npm"]
-    state: latest
-    update_cache: yes
+    pkg:
+      - nodejs
+      - npm
+# - name: "install dependencies."
+#   become: true
+#   apt:
+#     name: ["nodejs", "npm"]
+#     state: latest
+#     update_cache: yes
 
 - name: "install pm2"
   become: true
