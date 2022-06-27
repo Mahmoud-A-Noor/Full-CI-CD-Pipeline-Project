@@ -124,7 +124,6 @@ jobs:
             npm audit fix --audit-level=critical
             npm audit fix --audit-level=critical --force
             npm audit --audit-level=critical
-
             
   deploy-infrastructure:
     docker:
@@ -168,24 +167,24 @@ jobs:
             - inventory.txt
       - destroy_environment     
 
-  # configure-infrastructure:
-  #   docker:
-  #     - image: python:3.7-alpine3.11
-  #   steps:
-  #     - checkout
-  #     - add_ssh_keys:
-  #         fingerprints: [70:a7:27:c0:87:29:fa:c2:3f:24:fc:2d:9c:42:f6:b3]
-  #     - attach_workspace:
-  #         at: ./workspace
-  #     - run:
-  #         name: Install dependencies
-  #         command: |
-  #           apk add --update ansible
-  #     - run:
-  #         name: Configure server
-  #         command: |
-  #           ansible-playbook -i workspace/inventory.txt .circleci/ansible/configure-server.yml
-  #     - destroy_environment       
+  configure-infrastructure:
+    docker:
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints: [70:a7:27:c0:87:29:fa:c2:3f:24:fc:2d:9c:42:f6:b3]
+      - attach_workspace:
+          at: ./workspace
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --update ansible
+      - run:
+          name: Configure server
+          command: |
+            ansible-playbook -i workspace/inventory.txt .circleci/ansible/configure-server.yml
+      - destroy_environment       
 
   # run-migrations:
   #   docker:
@@ -204,7 +203,7 @@ jobs:
   #     - run:
   #         name: Send migration results to kvdb
   #         command: |
-  #           if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
+  #           if grep -q "has been executed successfully." ./backend/migrations_dump.txt
   #           then
   #               curl https://kvdb.io/DAxA3zoYm4Anj1C1HB6kLd/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
   #           fi
@@ -222,7 +221,7 @@ jobs:
   #         name: Install dependencies
   #         command: |
   #           apk update
-  #           apk add ansible
+  #           apk add --update ansible
   #           python -m pip install awscli
   #           apk add --update nodejs npm
   #     - run:
@@ -357,8 +356,8 @@ workflows:
           filters:
             branches:
               only: [master]
-      # - configure-infrastructure:
-      #     requires: [deploy-infrastructure]
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
       # - run-migrations:
       #     requires: [configure-infrastructure]
       # - deploy-frontend:
