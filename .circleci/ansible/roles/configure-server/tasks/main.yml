@@ -1,11 +1,11 @@
 ---
-- name: "upgrade packages."
+- name: Update and upgrade apt packages
   become: true
   apt:
-    upgrade: "yes"
+    upgrade: yes
+    update_cache: yes
+    cache_valid_time: 86400 #One day
 
-- name: Update apt repo and cache
-      apt: update_cache=yes force_apt_get=yes cache_valid_time=3600
 - name: Install nodejs and npm
   apt:
     pkg:
