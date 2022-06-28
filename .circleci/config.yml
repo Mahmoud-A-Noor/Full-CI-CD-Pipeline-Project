@@ -217,7 +217,6 @@ jobs:
           bucket: "DAxA3zoYm4Anj1C1HB6kLd" 
       - destroy_environment
 
-
   # deploy-frontend:
   #   docker:
   #     - image: python:3.7-alpine3.11
