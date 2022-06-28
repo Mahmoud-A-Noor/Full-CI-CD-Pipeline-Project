@@ -182,7 +182,6 @@ jobs:
           name: Configure server
           command: |
             cat ./workspace/inventory.txt
-            return 1
             ansible-playbook -i ./workspace/inventory.txt .circleci/ansible/configure-server.yml
       - destroy_environment       
 
@@ -247,6 +246,7 @@ jobs:
             npm run build
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
+            return 1
       - revert-migrations:  
           bucket: "DAxA3zoYm4Anj1C1HB6kLd" 
       - destroy_environment      
