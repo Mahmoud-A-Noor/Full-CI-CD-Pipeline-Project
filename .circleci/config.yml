@@ -21,7 +21,7 @@ commands:
           name: Revert migrations
           when: on_fail
           command: |
-            SUCCESS = curl "https://kvdb.io/<<parameters.bucket>>/migration_${CIRCLE_WORKFLOW_ID:0:7}"
+            SUCCESS = $(curl "https://kvdb.io/<<parameters.bucket>>/migration_${CIRCLE_WORKFLOW_ID:0:7}")
             if(( $SUCCESS==1 )); 
             then
               cd ~/project/backend
@@ -192,9 +192,10 @@ jobs:
       - restore_cache:
           keys: [backend-build]
       - run:
-          name: Install AWS CLI
+          name: Install AWS CLI and Curl
           working_directory: /tmp
           command: |
+            sudo apt install -y curl
             sudo apt-get update && sudo apt-get install -yy less
             curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
             unzip awscliv2.zip
@@ -227,6 +228,7 @@ jobs:
   #         command: |
   #           apk update
   #           apk add --update ansible
+  #           apk add --update curl
   #           python -m pip install awscli
   #           apk add --update nodejs npm
   #     - run:
