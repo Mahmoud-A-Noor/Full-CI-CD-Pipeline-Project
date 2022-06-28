@@ -1,7 +1,7 @@
 ---
 - name: Extract Artifact on ec2 instance
   unarchive:
-    src: "artifact.tar.gz"
+    src: "../../../../../artifact.tar.gz"
     dest: "/home/ubuntu/"
 
 
