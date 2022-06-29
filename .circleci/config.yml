@@ -11,6 +11,7 @@ commands:
             aws cloudformation delete-stack --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}"
             aws s3 rb s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --force
             aws cloudformation delete-stack --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}"
+  
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
     parameters:
@@ -22,10 +23,10 @@ commands:
           name: Revert migrations
           when: on_fail
           command: |
-            SUCCESS = curl -k "https://kvdb.io/<<parameters.bucket>>/migration_${CIRCLE_WORKFLOW_ID:0:7}"
+            SUCCESS = $(curl --insecure "https://kvdb.io/<<parameters.bucket>>/migration_${CIRCLE_WORKFLOW_ID:0:7}")
             if(( $SUCCESS==1 )); 
             then
-              cd ~/project/backend
+              cd /backend
               npm install
               npm run migrations:revert
             fi
@@ -295,7 +296,7 @@ jobs:
           command: |
             export BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[0].PublicIpAddress')
             export API_URL="http://${BACKEND_IP:7:-3}:3030"
-            if curl -4 "${API_URL}/api/status" | grep "ok"
+            if curl "${API_URL}/api/status" | grep "ok"
             then
                 return 0
             else
@@ -304,7 +305,7 @@ jobs:
       - run:
           name: Frontend smoke test.
           command: |
-            URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-east-1.amazonaws.com/#/employees"            
+            URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-east-1.amazonaws.com/index.html"            
             echo ${URL} 
             if curl -s ${URL} | grep "Welcome"
             then
@@ -313,9 +314,9 @@ jobs:
             else
               return 1
             fi
-      # - revert-migrations:  
-      #     bucket: "DAxA3zoYm4Anj1C1HB6kLd" 
-      # - destroy_environment  
+      - revert-migrations:  
+          bucket: "DAxA3zoYm4Anj1C1HB6kLd" 
+      - destroy_environment  
 
 #   cloudfront-update:
 #     docker:
