@@ -1,5 +1,5 @@
 ---
-- name: Creates directory
+- name: Creates udapeople directory
   file:
     path: /home/ubuntu/udapeople
     state: directory
