@@ -195,7 +195,6 @@ jobs:
           keys: [backend-build]
       - run:
           name: Install AWS CLI and Curl
-          working_directory: /tmp
           command: |
             curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
             unzip awscliv2.zip
@@ -209,9 +208,7 @@ jobs:
       - run:
           name: Send migration results to kvdb
           command: |
-            cat "1"
             cat ./backend/migrations_dump.txt
-            cat "1"
             if grep -q "has been executed successfully." ./backend/migrations_dump.txt
             then
                 curl -k https://kvdb.io/DAxA3zoYm4Anj1C1HB6kLd/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
