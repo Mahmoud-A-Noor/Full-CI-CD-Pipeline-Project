@@ -314,9 +314,9 @@ jobs:
             else
               return 1
             fi
-      # - revert-migrations:  
-      #     bucket: "DAxA3zoYm4Anj1C1HB6kLd" 
-      # - destroy_environment  
+      - revert-migrations:  
+          bucket: "DAxA3zoYm4Anj1C1HB6kLd" 
+      - destroy_environment  
 
   # cloudfront-update:
   #   docker:
