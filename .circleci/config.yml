@@ -13,20 +13,16 @@ commands:
             aws cloudformation delete-stack --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}"
   
   revert-migrations:
-    description: Revert the last migration if successfully run in the current workflow.
-    parameters:
-      bucket:
-        default: "DAxA3zoYm4Anj1C1HB6kLd"
-        type: string     
+    description: Revert the last migration if successfully run in the current workflow.    
     steps:
       - run:
           name: Revert migrations
           when: on_fail
           command: |
-            SUCCESS = $(curl --insecure "https://kvdb.io/<<parameters.bucket>>/migration_${CIRCLE_WORKFLOW_ID:0:7}")
+            SUCCESS=$(curl --insecure "https://kvdb.io/${BUCKET_ID}/migration_${CIRCLE_WORKFLOW_ID:0:7}")
             if(( $SUCCESS==1 )); 
             then
-              cd /backend
+              cd backend
               npm install
               npm run migrations:revert
             fi
@@ -207,15 +203,15 @@ jobs:
             cd backend
             npm install
             npm run migrations > migrations_dump.txt
-            cat migrations_dump.txt
       - run:
           name: Send migration results to kvdb
           command: |
             if grep -q "has been executed successfully." ./backend/migrations_dump.txt
             then
-                curl -k https://kvdb.io/DAxA3zoYm4Anj1C1HB6kLd/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
+                curl https://kvdb.io/${BUCKET_ID}/migration_${CIRCLE_WORKFLOW_ID:0:7} -d '1'
             fi
       - destroy_environment
+      - revert_migrations
 
   deploy-frontend:
     docker:
@@ -388,8 +384,8 @@ workflows:
               only: [master]
       - configure-infrastructure:
           requires: [deploy-infrastructure]
-      # - run-migrations:
-      #     requires: [configure-infrastructure]
+      - run-migrations:
+          requires: [configure-infrastructure]
       # - deploy-frontend:
       #     requires: [run-migrations]
       # - deploy-backend:
