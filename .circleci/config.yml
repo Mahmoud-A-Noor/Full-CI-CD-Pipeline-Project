@@ -233,7 +233,6 @@ jobs:
           command: |
             export BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[0].PublicIpAddress')
             export API_URL="http://${BACKEND_IP:7:-3}:3030"
-            echo "API_URL = ${API_URL}"
             echo API_URL="http://${BACKEND_IP:7:-3}:3030" >> frontend/.env
             cat frontend/.env
       - run:
@@ -314,9 +313,9 @@ jobs:
             else
               return 1
             fi
-      - revert-migrations:  
-          bucket: "DAxA3zoYm4Anj1C1HB6kLd" 
-      - destroy_environment  
+      # - revert-migrations:  
+      #     bucket: "DAxA3zoYm4Anj1C1HB6kLd" 
+      # - destroy_environment  
 
 #   cloudfront-update:
 #     docker:
