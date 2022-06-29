@@ -243,8 +243,7 @@ jobs:
             npm install
             npm run build
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
-      - revert-migrations:  
-          bucket: "DAxA3zoYm4Anj1C1HB6kLd" 
+      - revert-migrations 
       - destroy_environment      
                     
   deploy-backend:
@@ -269,14 +268,17 @@ jobs:
           name: Deploy backend
           command: |
             cd backend
-            npm i
+            npm install
             npm run build
             cd ..
-            # Zip the directory
             tar -C backend -czvf artifact.tar.gz .
+
+            export TYPEORM_MIGRATIONS_DIR=./migrations
+            export TYPEORM_MIGRATIONS=./migrations/*.ts
+            export TYPEORM_ENTITIES=./modules/domain/**/*.entity{.ts,.js}
+
             ansible-playbook -i ./workspace/inventory.txt .circleci/ansible/deploy-backend.yml
-      - revert-migrations:  
-          bucket: "DAxA3zoYm4Anj1C1HB6kLd" 
+      - revert-migrations
       - destroy_environment  
 
 
@@ -316,8 +318,7 @@ jobs:
             else
               return 1
             fi
-      - revert-migrations:  
-          bucket: "DAxA3zoYm4Anj1C1HB6kLd" 
+      - revert-migrations 
       - destroy_environment  
 
   # cloudfront-update:
