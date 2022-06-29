@@ -206,7 +206,7 @@ jobs:
           command: |
             if grep -q "has been executed successfully." ./backend/migrations_dump.txt
             then
-                curl --insecure https://kvdb.io/${BUCKET_ID}/migration_${CIRCLE_WORKFLOW_ID:0:7} -d '1'
+                curl -d '1' https://kvdb.io/${BUCKET_ID}/migration_${CIRCLE_WORKFLOW_ID:0:7} --insecure
             fi
       - destroy_environment
       - revert_migrations
@@ -387,10 +387,10 @@ workflows:
           requires: [deploy-infrastructure]
       - run-migrations:
           requires: [configure-infrastructure]
-      # - deploy-frontend:
-      #     requires: [run-migrations]
-      # - deploy-backend:
-      #     requires: [run-migrations]
+      - deploy-frontend:
+          requires: [run-migrations]
+      - deploy-backend:
+          requires: [run-migrations]
       # - smoke-test:
       #     requires: [deploy-backend, deploy-frontend]
       # - cloudfront-update:
