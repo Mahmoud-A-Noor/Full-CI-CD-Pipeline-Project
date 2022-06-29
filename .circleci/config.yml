@@ -211,6 +211,7 @@ jobs:
             cat ./backend/migrations_dump.txt
             if grep -q "has been executed successfully." ./backend/migrations_dump.txt
             then
+                cat ./backend/migrations_dump.txt
                 curl -k https://kvdb.io/DAxA3zoYm4Anj1C1HB6kLd/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi
       - destroy_environment
