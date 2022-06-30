@@ -354,6 +354,7 @@ jobs:
             name: Install dependencies
             command: |
               apk update
+              apk add --update curl
               python -m pip install awscli
         - run:
             name: Remove old stacks and files
