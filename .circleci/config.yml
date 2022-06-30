@@ -19,7 +19,7 @@ commands:
           name: Revert migrations
           when: on_fail
           command: |
-            SUCCESS=$(curl --insecure "https://kvdb.io/${BUCKET_ID}/migration_${CIRCLE_WORKFLOW_ID:0:7}")
+            SUCCESS=$(curl "https://kvdb.io/${BUCKET_ID}/migration_${CIRCLE_WORKFLOW_ID:0:7}")
             if(( $SUCCESS==1 )); 
             then
               cd backend
@@ -186,15 +186,15 @@ jobs:
 
   run-migrations:
     docker:
-      - image: circleci/node:13.8.0
+      - image: python:3.7-alpine3.11
     steps:
       - checkout
       - run:
           name: Install AWS CLI and Curl
           command: |
-            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscli.zip"
-            unzip awscli.zip
-            sudo aws/install
+            apk update
+            apk add --update nodejs npm
+            python -m pip install awscli
       - run:
           name: Run migrations
           command: |
@@ -206,7 +206,7 @@ jobs:
           command: |
             if grep -q "has been executed successfully." ./backend/migrations_dump.txt
             then
-                curl --insecure https://kvdb.io/${BUCKET_ID}/migration_${CIRCLE_WORKFLOW_ID:0:7} -d '1'
+                curl https://kvdb.io/${BUCKET_ID}/migration_${CIRCLE_WORKFLOW_ID:0:7} -d '1'
             fi
       - destroy_environment
       - revert_migrations
