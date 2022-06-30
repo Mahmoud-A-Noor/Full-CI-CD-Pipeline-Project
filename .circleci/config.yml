@@ -345,10 +345,6 @@ jobs:
               --stack-name InitialStack \
               --parameter-overrides WorkflowID="udapeople-${CIRCLE_WORKFLOW_ID:0:7}" \
               --tags project=udapeople  
-      - persist_to_workspace:
-          root: ./
-          paths:
-            - oldworkflowid.txt
 
   cleanup:
       docker:
@@ -359,10 +355,7 @@ jobs:
             name: Install dependencies
             command: |
               apk update
-              apk add --upgrade tar
               python -m pip install awscli
-        - attach_workspace:
-            at: ./workspace
         - run:
             name: Remove old stacks and files
             command: |
